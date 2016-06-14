@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MOVE</title>
+    <style>
+        canvas{
+            background: #fff;
+            border:2px #2ac1cc solid;
+            background: url("011.jpg");
+        }
+
+        h1{
+            font-family:Cambria,Cochin,Georgia,Times,"Times New Roman",Serif;
+            font-size: x-large;
+            color: #999999;
+        }
+
+        body{
+            background: #f4ffec;
+            padding:10px;
+        }
+
+        p{
+            font-family:"Franklin Gothic Medium","Arial Narrow",Arial,sans-serif;
+            font-size: 20px;
+        }
+
+        a{
+            color:#3E99CA;
+            text-decoration: none;
+        }
+
+        .info{
+            background: #E2F0F8;
+            border:2px #7eccb6 solid;
+            width: 869px;
+        }
+
+        .place{
+
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Aircraft Cruising</h1>
+    <div id="container">
+        <canvas id="myCanvas" width="1850px" height="835px">
+                Your browser does not support HTML5 canvas.
+        </canvas>
+    </div>
+
+    <div class="info">
+        <p><b>飞机位置信息:</b></p>
+        <p id="locationX">X--</p>
+        <p id="locationY">Y--</p>
+    </div>
+
+    <script type="text/javascript">
+
+        var canvas=document.querySelector("#myCanvas");
+        var ctx=canvas.getContext("2d");
+
+        var locationX=document.getElementById("locationX");
+        var locationY=document.getElementById("locationY");
+
+        canvasWidth=canvas.width;
+        canvasHeight=canvas.height;
+
+        var myImage=new Image();
+        myImage.src="flight5.jpg";
+
+        var placeImage=new Image();
+        placeImage.src="place.png";
+
+        // depending on your browser, the right version of the rAF function will be returned...I hope
+        var requestAnimationFrame = window.requestAnimationFrame
+                                  ||window.mozRequestAnimationFrame
+                                  ||window.webkitRequestAnimationFrame
+                                  ||window.msRequestAnimationFrame;
+
+        //this array contains a reference to every flight that you will create
+        var flights=new Array();
+
+        //the location class of light
+        var c={
+            x:0,
+            y:0
+        };
+
+        //the flight get some angle
+        var angle=0;
+        var angle1=0;
+        var speedX=0;
+        var speedY=0;
+        var radius=70;
+        var radius1=0;
+        var bounce=-0.8;
+
+        //the function of draw to contain everything
+        function draw() {
+            ctx.clearRect(0,0,canvasWidth,canvasHeight);
+
+            drawPlace();
+
+//            drawScanning();
+
+            drawScanning2();
+
+            drawFlight();
+
+            move();
+
+            info();
+
+            requestAnimationFrame(draw);
+
+        }
+
+        //Your can see some flights in this place
+        function drawPlace() {
+            ctx.beginPath();
+            ctx.arc(50,50,100,0,Math.PI*2,true);
+            ctx.closePath();
+            ctx.fillStyle="#CC682E";
+            ctx.fill();
+        }
+
+        //the flights is fly in the sky
+        function drawFlight() {
+            ctx.fillStyle="rgba(0,0,0,0,0.4)";
+            ctx.strokeStyle="rgba(0,153,255,0.2)";
+            ctx.drawImage(myImage,c.x,c.y,30,30);
+        }
+
+//        //the scanning of flight
+//        function drawScanning() {
+//            ctx.beginPath();
+//            ctx.arc(c.x+radius*Math.cos(angle1),c.y+radius*Math.sin(angle1),5,0,Math.PI*2,true);
+//            ctx.closePath();
+//            ctx.fillStyle="#000";
+//            ctx.fill();
+//
+//            angle1 += 0.1;
+//        }
+
+        //the scanning2 of flight
+        function drawScanning2() {
+            ctx.beginPath();
+            ctx.arc(c.x,c.y+12,radius1,Math.PI*(1/6),Math.PI*(-1/6),true);
+            ctx.closePath();
+            ctx.fillStyle="red";
+            ctx.fill();
+
+            if(radius1 < 100) {
+                radius1 += 5;
+            }else{
+                radius1 -= 100;
+            }
+        }
+
+//        //check the flight arrived at edge
+//        function checkEdge(x,y) {
+//            if(x > canvasWidth){
+//                speedX *= bounce;
+//            }
+//            if(y > canvasHeight){
+//                speedY *= bounce;
+//            }
+//        }
+
+        //how to fly for flights
+        function move() {
+
+            //flight fly randomly
+//            var decimal=Math.random();
+//            c.x=decimal*canvasWidth;
+//            c.y=decimal*canvasWeight;
+
+//            var a=0.001;
+//            speedX += a;
+//            //flight fly straight line in x
+//            c.x += speedX;
+//            if(c.x < canvasWidth) {
+//                c.x += speedX;
+//            }else{
+//                c.x -= canvasWidth;
+//            }
+//
+//            speedY = 3;
+//            //flight fly straight line in y
+//            c.y += speedY;
+//            if(c.y < canvasHeight){
+//                c.y += speedY;
+//            }else{
+//                c.y -= canvasHeight;
+//            }
+
+
+            //flight fly in smooth motion
+            var range=60;
+            if(c.x < canvasWidth) {
+                c.x += 3;
+            }else{
+                c.x -= canvasWidth;
+            }
+            c.y = canvasHeight / 2 + Math.sin(angle) * range;
+            angle += 0.1;
+
+            //flight fly in curve
+
+//            if(c.y > canvasHeight){
+//                speedY *= bounce;
+//            }
+//            checkEdge(c.x,c.y);
+
+        }
+
+        //present the information of flight
+        function info(){
+            locationX.innerHTML="X-- <u>"+c.x.toFixed()+"</u>";
+            locationY.innerHTML="Y-- <u>"+c.y.toFixed()+"</u>";
+        }
+
+        //invoke to draw the map again ang again
+        draw();
+        //setInterval(draw,100000);
+    </script>
+</body>
+</html>
